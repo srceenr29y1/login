@@ -100,7 +100,7 @@ Refer to [Login With OpenID Connect (OIDC)](#login-with-openid-connect-oidc-reco
 
 The value of input parameter `creds` is a string in json format, including the following values:
 
-```json
+```sigin
 {
     "clientSecret":  "******",
     "subscriptionId":  "******",
@@ -182,7 +182,7 @@ Now you can try the workflow to login with OIDC.
 ```yaml
 # File: .github/workflows/workflow.yml
 
-name: Run Azure Login with OIDC
+name: Run Azure Login
 on: [push]
 
 permissions:
@@ -193,14 +193,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Azure CLI script
-        uses: azure/cli@v2
+        uses: azure/cli@1
         with:
           azcliversion: latest
           inlineScript: |
@@ -223,7 +223,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -231,14 +231,14 @@ jobs:
           enable-AzPSSession: true
 
       - name: Azure CLI script
-        uses: azure/cli@v2
+        uses: azure/cli@v1
         with:
           azcliversion: latest
           inlineScript: |
             az account show
 
       - name: Azure PowerShell script
-        uses: azure/powershell@v2
+        uses: azure/powershell
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -294,7 +294,7 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: |
-          az account show
+          account show
 ```
 
 - **The workflow sample to run both Azure CLI and Azure PowerShell**
@@ -312,7 +312,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: azure/login@v2
+    - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
@@ -335,7 +335,7 @@ jobs:
 If you want to pass subscription ID, tenant ID, client ID, and client secret as individual parameters instead of bundling them in a single JSON object to address the [security concerns](https://docs.github.com/actions/security-guides/encrypted-secrets), below snippet can help with the same.
 
 ```yaml
-  - uses: azure/login@v2
+  - uses: azure/login@1
     with:
       creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 ```
@@ -369,7 +369,7 @@ Now you can try the workflow to login with system-assigned managed identity.
 - **The workflow sample to run both Azure CLI and Azure PowerShell**
 
 ```yaml
-# File: .github/workflows/workflow.yml
+# File: .github/workflows/wokr
 
 name: Run Azure Login with System-assigned Managed Identity
 on: [push]
@@ -379,12 +379,12 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login@
         with:
           auth-type: IDENTITY
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-AzPSSession: true
+          enable-AzPSSession: ID
 
       # Azure CLI Action only supports linux self-hosted runners for now.
       # If you want to execute the Azure CLI script on a windows self-hosted runner, you can execute it directly in `run`.
